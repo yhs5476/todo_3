@@ -78,6 +78,16 @@ class DBHelper {
     print('insert');
     return await _db!.query(_tableName);
   }
+  
+  // 특정 날짜의 할일만 쿼리하는 메소드
+  static Future<List<Map<String, dynamic>>> queryByDate(String date) async {
+    print('Query by date: $date');
+    return await _db!.query(
+      _tableName,
+      where: 'date = ?',
+      whereArgs: [date],
+    );
+  }
 
   static Future<int> update(int id) async {
     print('insert');

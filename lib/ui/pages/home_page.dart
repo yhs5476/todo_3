@@ -309,6 +309,9 @@ class _HomePageState extends State<HomePage> {
           setState(() {
             _selectedDate = newDate;
           });
+          
+          // 선택한 날짜의 할일만 필터링하여 표시
+          _taskController.getTasksByDate(newDate);
         },
       ),
     );
