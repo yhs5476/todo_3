@@ -22,11 +22,11 @@
 		</data>
 		<key>Modules/Try.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo</key>
 		<data>
-		EExlYOx1jKhRDNJQQ+7c0JaFZwc=
+		yVnQ/BO2UoCrc188V5YDay2Phq8=
 		</data>
 		<key>Modules/Try.swiftmodule/Project/x86_64-apple-ios-simulator.swiftsourceinfo</key>
 		<data>
-		zMy+zpf5RJ5Cq9MtGVGdGERABRQ=
+		fmZajFBffsgi2rQpiE55h13jXTM=
 		</data>
 		<key>Modules/Try.swiftmodule/arm64-apple-ios-simulator.abi.json</key>
 		<data>
@@ -38,7 +38,7 @@
 		</data>
 		<key>Modules/Try.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		bVb/GUGnk2jCI6O+j19+gSIh2ck=
+		5BeK/zxIJhGhk0nMZUDC6puBJxU=
 		</data>
 		<key>Modules/Try.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<data>
@@ -50,7 +50,7 @@
 		</data>
 		<key>Modules/Try.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		rIGW+JZDRNWwJgPksKBme7bkSlk=
+		xCUqgFtPwm6hEO1/DFkr6jTo7i4=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -96,22 +96,22 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			EExlYOx1jKhRDNJQQ+7c0JaFZwc=
+			yVnQ/BO2UoCrc188V5YDay2Phq8=
 			</data>
 			<key>hash2</key>
 			<data>
-			q4VJRAGIes56+kcirDn27yhK+/RnRLNWh0eYIaMlEqw=
+			ra/P70ybW764lORnKfTOyC/GLZMx7MRKmQzzotNPR2E=
 			</data>
 		</dict>
 		<key>Modules/Try.swiftmodule/Project/x86_64-apple-ios-simulator.swiftsourceinfo</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			zMy+zpf5RJ5Cq9MtGVGdGERABRQ=
+			fmZajFBffsgi2rQpiE55h13jXTM=
 			</data>
 			<key>hash2</key>
 			<data>
-			u7tsz3DjmINbK+1iH4ZIRlu4kgpFGqBBO83EwS6kSo4=
+			3SmoMeClO7sekh2R2BKIEwvvRCSku1R9WeYp/42anp0=
 			</data>
 		</dict>
 		<key>Modules/Try.swiftmodule/arm64-apple-ios-simulator.abi.json</key>
@@ -140,11 +140,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			bVb/GUGnk2jCI6O+j19+gSIh2ck=
+			5BeK/zxIJhGhk0nMZUDC6puBJxU=
 			</data>
 			<key>hash2</key>
 			<data>
-			atqVhrthi3RkLQoPPDSU61Fwqzr3ucSr4BteIacd0qU=
+			O5O6LIZVN3s+3nKpL7Gqa92sLXqOnJrIwTUJZBehHJw=
 			</data>
 		</dict>
 		<key>Modules/Try.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
@@ -173,11 +173,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			rIGW+JZDRNWwJgPksKBme7bkSlk=
+			xCUqgFtPwm6hEO1/DFkr6jTo7i4=
 			</data>
 			<key>hash2</key>
 			<data>
-			ulmgQlg0Ba/lnncJJo4zppiz6e75jpDyyOSWNAMnSaI=
+			a9fdzNdwxXpThT4xB8ReY/HoX56LQwSGnjxH6cmSFSE=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>

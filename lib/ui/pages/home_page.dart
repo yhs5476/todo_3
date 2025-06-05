@@ -19,6 +19,7 @@ import '../../models/task.dart'; // 할일 모델 정의
 import '../../services/notification_services.dart'; // 알림 서비스
 import '../size_config.dart'; // 화면 크기 관리 유틸리티
 import '../theme.dart'; // 앱 테마 설정
+import '../widgets/task_bottom_sheet.dart'; // 할 일 관리 바텀 시트 위젯
 
 // 홈 페이지 - 할일 관리의 메인 화면 위젯
 class HomePage extends StatefulWidget {
@@ -474,129 +475,9 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // 할 일 항목 터치 시 표시되는 바텀 시트 메소드 - 할 일 관리 옵션 표시
+  // 할 일 항목 터치 시 바텀 시트 표시 메소드
   _showBottomSheet(BuildContext context, Task task) {
-    // GetX를 사용하여 바텀 시트 표시
-    Get.bottomSheet(SingleChildScrollView(
-      child: Container(
-        // 상단 여백 설정
-        padding: const EdgeInsets.only(top: 4),
-        // 화면 너비에 맞춤
-        width: SizeConfig.screenWidth,
-        // 화면 방향과 할 일 완료 여부에 따라 다른 높이 설정
-        height: (SizeConfig.orientation == Orientation.landscape)
-            ? (task.isCompleted == 1
-                ? SizeConfig.screenHeight * 0.6 // 가로 모드 + 완료된 할 일
-                : SizeConfig.screenHeight * 0.8) // 가로 모드 + 완료되지 않은 할 일
-            : (task.isCompleted == 1
-                ? SizeConfig.screenHeight * 0.30 // 세로 모드 + 완료된 할 일
-                : SizeConfig.screenHeight * 0.39), // 세로 모드 + 완료되지 않은 할 일
-        // 테마에 따라 배경색 설정
-        color: Get.isDarkMode ? darkHeaderClr : Colors.white,
-        child: Column(
-          children: [
-            // 바텀 시트 상단 핸들 부분
-            Flexible(
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  // 테마에 따라 핸들 색상 설정
-                  color: Get.isDarkMode ? Colors.grey[600] : Colors.grey[300],
-                ),
-              ),
-            ),
-            // 핸들과 버튼 사이 여백
-            const SizedBox(
-              height: 20,
-            ),
-            // 할 일이 완료된 상태일 경우 '할 일 완료' 버튼 표시하지 않음
-            task.isCompleted == 1
-                ? Container()
-                : _buildBottomSheet(
-                    label: '할 일 완료',
-                    onTap: () {
-                      // 할 일 완료 시 해당 알림 취소
-                      NotifyHelper().cancelNotification(task);
-                      // 할 일을 완료 상태로 변경
-                      _taskController.markTaskAsCompleted(task.id!);
-                      // 바텀 시트 닫기
-                      Get.back();
-                    },
-                    clr: primaryClr),
-            // '할 일 삭제' 버튼 - 완료 여부와 관계없이 표시
-            _buildBottomSheet(
-                label: '할 일 삭제',
-                onTap: () {
-                  // 할 일 삭제 시 해당 알림 취소
-                  NotifyHelper().cancelNotification(task);
-                  // 할 일 삭제 처리
-                  _taskController.deleteTasks(task);
-                  // 바텀 시트 닫기
-                  Get.back();
-                },
-                clr: Colors.red[300]!), // 삭제 버튼은 빨간색으로 표시
-            // 구분선
-            Divider(color: Get.isDarkMode ? Colors.grey : darkGreyClr),
-            // '취소' 버튼
-            _buildBottomSheet(
-                label: '취소',
-                onTap: () {
-                  // 바텀 시트 닫기
-                  Get.back();
-                },
-                clr: primaryClr),
-            // 하단 여백
-            const SizedBox(
-              height: 5,
-            ),
-          ],
-        ),
-      ),
-    ));
-  }
-
-  // 바텀 시트에 표시되는 버튼 생성 메소드
-  _buildBottomSheet(
-      {required String label, // 버튼에 표시될 텍스트
-      required Function() onTap, // 버튼 클릭 시 실행될 함수
-      required Color clr, // 버튼 색상
-      bool isClose = false}) {
-    // 취소 버튼 여부 (기본값: false)
-    return GestureDetector(
-      // 터치 이벤트 처리
-      onTap: onTap,
-      child: Container(
-        // 버튼 상하 여백 설정
-        margin: const EdgeInsets.symmetric(vertical: 4),
-        // 버튼 높이
-        height: 65,
-        // 버튼 너비 (화면 너비의 90%)
-        width: SizeConfig.screenWidth * 0.9,
-        decoration: BoxDecoration(
-            // 버튼 테두리 설정
-            border: Border.all(
-              width: 2, // 테두리 두께
-              // 테두리 색상 설정
-              color: isClose
-                  ? Get.isDarkMode // 취소 버튼일 경우 테마에 따라 회색 계열 사용
-                      ? Colors.grey[600]! // 다크 모드일 때 진한 회색
-                      : Colors.grey[300]! // 라이트 모드일 때 연한 회색
-                  : clr, // 일반 버튼은 전달받은 색상 사용
-            ),
-            // 버튼 모서리 둥글게 설정
-            borderRadius: BorderRadius.circular(20),
-            // 버튼 배경색 설정 - 취소 버튼은 투명, 일반 버튼은 전달받은 색상
-            color: isClose ? Colors.transparent : clr),
-        // 버튼 내부 텍스트 가운데 정렬
-        child: Center(
-          child: Text(
-            label,
-            // 텍스트 스타일 설정 - 취소 버튼은 기본 텍스트 스타일, 일반 버튼은 흰색 텍스트
-            style:
-                isClose ? titleStyle : titleStyle.copyWith(color: Colors.white),
-          ),
-        ),
-      ),
-    );
+    // 분리된 TaskBottomSheet 위젯을 사용하여 바텀 시트 표시
+    TaskBottomSheet.showBottomSheet(context, task, _taskController);
   }
 }
