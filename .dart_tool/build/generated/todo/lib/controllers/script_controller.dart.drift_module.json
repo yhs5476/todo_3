@@ -1,0 +1,9 @@
+{
+  "elements": {},
+  "imports": [
+    "package:get/get.dart",
+    "package:shared_preferences/shared_preferences.dart",
+    "package:todo/models/script_model.dart",
+    "package:uuid/uuid.dart"
+  ]
+}

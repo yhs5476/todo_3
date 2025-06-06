@@ -7,9 +7,9 @@ import 'package:todo/services/auth_service.dart'; // 사용자 인증 서비스
 import 'package:todo/services/theme_services.dart'; // 테마 관리 서비스
 import 'package:todo/ui/theme.dart'; // 앱 테마 설정
 import 'package:todo/ui/pages/login_page.dart'; // 로그인 페이지
+import 'package:todo/controllers/script_controller.dart'; // 스크립트 컨트롤러
 
 // 내부 모듈 임포트
-import 'db/db_helper.dart'; // 데이터베이스 관련 헬퍼
 import 'firebase_options.dart'; // Firebase 설정 옵션
 
 // 앱 실행의 진입점
@@ -22,14 +22,12 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // 로컬 데이터베이스 초기화 - SQLite 데이터베이스 준비
-  await DBHelper.initDb();
-
   // GetStorage 초기화 - 로컬 스토리지 접근 준비
   await GetStorage.init();
 
   // 인증 서비스 초기화 및 의존성 주입 - GetX 서비스 로케이터에 등록
   Get.put(AuthService());
+  Get.put(ScriptController()); // 스크립트 컨트롤러 초기화 및 등록
 
   // 앱 시작
   runApp(const MyApp());

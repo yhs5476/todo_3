@@ -1,0 +1,9 @@
+{
+  "elements": {},
+  "imports": [
+    "package:flutter/material.dart",
+    "package:get/get.dart",
+    "package:todo/ui/size_config.dart",
+    "package:todo/ui/theme.dart"
+  ]
+}

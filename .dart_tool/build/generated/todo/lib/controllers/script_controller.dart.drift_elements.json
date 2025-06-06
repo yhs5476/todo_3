@@ -1,0 +1,1 @@
+{"valid_import":true,"imports":[{"uri":"package:get/get.dart","transitive":false},{"uri":"package:shared_preferences/shared_preferences.dart","transitive":false},{"uri":"package:todo/models/script_model.dart","transitive":false},{"uri":"package:uuid/uuid.dart","transitive":false}],"elements":[]}

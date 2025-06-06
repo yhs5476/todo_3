@@ -1,0 +1,41 @@
+{
+  "elements": {
+    "AppDatabase": {
+      "id": {
+        "library_uri": "package:todo/db/database.dart",
+        "name": "AppDatabase"
+      },
+      "declaration": {
+        "source_uri": "package:todo/db/database.dart",
+        "offset": 368,
+        "name": "AppDatabase"
+      },
+      "references": [
+        {
+          "library_uri": "package:todo/db/tables.dart",
+          "name": "tasks"
+        }
+      ],
+      "type": "database",
+      "tables": [
+        {
+          "library_uri": "package:todo/db/tables.dart",
+          "name": "tasks"
+        }
+      ],
+      "views": [],
+      "includes": [],
+      "queries": [],
+      "schema_version": 1,
+      "daos": [],
+      "has_constructor_arg": false
+    }
+  },
+  "imports": [
+    "package:drift/drift.dart",
+    "package:drift/native.dart",
+    "package:path_provider/path_provider.dart",
+    "package:path/path.dart",
+    "package:todo/db/tables.dart"
+  ]
+}

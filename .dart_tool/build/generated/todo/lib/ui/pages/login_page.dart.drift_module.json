@@ -1,0 +1,12 @@
+{
+  "elements": {},
+  "imports": [
+    "package:firebase_auth/firebase_auth.dart",
+    "package:flutter/material.dart",
+    "package:font_awesome_flutter/font_awesome_flutter.dart",
+    "package:get/get.dart",
+    "package:todo/services/auth_service.dart",
+    "package:todo/ui/pages/home_page.dart",
+    "package:todo/ui/theme.dart"
+  ]
+}

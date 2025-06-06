@@ -1,0 +1,9 @@
+{
+  "elements": {},
+  "imports": [
+    "package:firebase_auth/firebase_auth.dart",
+    "package:flutter/material.dart",
+    "package:google_sign_in/google_sign_in.dart",
+    "package:get/get.dart"
+  ]
+}

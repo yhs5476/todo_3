@@ -1,0 +1,1 @@
+{"valid_import":true,"imports":[{"uri":"package:flutter/material.dart","transitive":false},{"uri":"package:google_fonts/google_fonts.dart","transitive":false},{"uri":"package:todo/ui/size_config.dart","transitive":false},{"uri":"package:todo/ui/theme.dart","transitive":false},{"uri":"package:todo/models/task.dart","transitive":false}],"elements":[]}

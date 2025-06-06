@@ -5,20 +5,20 @@ import 'package:flutter/material.dart'; // 기본 Material 디자인
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart'; // 애니메이션 효과
 import 'package:flutter_svg/flutter_svg.dart'; // SVG 이미지 표시
 import 'package:get/get.dart'; // GetX 상태 관리 패키지
-import 'package:google_fonts/google_fonts.dart'; // 구글 폰트 적용
+import 'package:google_fonts/google_fonts.dart'; // 구글 폰트
 import 'package:intl/intl.dart'; // 날짜 및 시간 포맷팅
 import 'package:todo/services/auth_service.dart'; // 사용자 인증 서비스
 import 'package:todo/services/theme_services.dart'; // 테마 관리 서비스
+import 'package:todo/ui/pages/add_speech_to_text.dart'; // 음성인식 페이지
 import 'package:todo/ui/pages/login_page.dart'; // 로그인 페이지
-import 'package:todo/ui/pages/add_speech_to_text.dart'; // 음성인식으로 할일 추가 페이지
+import 'package:todo/ui/size_config.dart'; // 사이즈 설정
+import 'package:todo/ui/theme.dart'; // 앱 테마 설정
 import 'package:todo/ui/pages/add_task_page.dart'; // 할일 추가 페이지
 import 'package:todo/ui/widgets/button.dart'; // 커스텀 버튼 위젯
-import 'package:todo/ui/widgets/task_tile.dart'; // 할일 목록 아이템 위젯
+import 'package:todo/ui/widgets/task_tile.dart';
+import 'package:todo/ui/pages/scripts_page.dart'; // 스크립트 페이지
 import '../../controllers/task_controller.dart'; // 할일 관리 컨트롤러
 import '../../models/task.dart'; // 할일 모델 정의
-import '../../services/notification_services.dart'; // 알림 서비스
-import '../size_config.dart'; // 화면 크기 관리 유틸리티
-import '../theme.dart'; // 앱 테마 설정
 import '../widgets/task_bottom_sheet.dart'; // 할 일 관리 바텀 시트 위젯
 
 // 홈 페이지 - 할일 관리의 메인 화면 위젯
@@ -31,18 +31,9 @@ class HomePage extends StatefulWidget {
 
 // 홈화면의 상태를 관리하는 클래스
 class _HomePageState extends State<HomePage> {
-  // 알림 관리를 위한 헬퍼 객체
-  late NotifyHelper notifyHelper;
-
   @override
   void initState() {
     super.initState();
-    // 알림 헬퍼 초기화
-    notifyHelper = NotifyHelper();
-    // iOS에서 알림 권한 요청
-    notifyHelper.requestIOSPermissions();
-    // 알림 기능 초기화
-    notifyHelper.initializeNotification();
     // 할일 목록 가져오기
     _taskController.getTasks();
 
@@ -99,13 +90,19 @@ class _HomePageState extends State<HomePage> {
       // 음성 인식으로 할일 추가하는 버튼
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          // 음성인식 페이지로 이동
-          await Get.to(() => const AddSpeechToTextPage());
-          // 새로운 할일 목록 가져오기
-          _taskController.getTasks();
+          // 음성인식 페이지로 이동하고, 결과를 AddTaskPage로 전달
+          final dynamic speechResult = await Get.to(() => const AddSpeechToTextPage());
+          String? recognizedContent;
+          if (speechResult != null && speechResult is Map<String, String>) {
+            recognizedContent = speechResult['content'];
+          }
+          // AddTaskPage로 이동하면서 인식된 텍스트 전달 (AddTaskPage 수정 필요)
+          await Get.to(() => AddTaskPage(initialTaskContent: recognizedContent));
+          _taskController.getTasks(); // 할일 목록 새로고침
         },
         backgroundColor: primaryClr,
-        child: const Icon(Icons.mic), // 마이크 아이콘
+        foregroundColor: Colors.white, // 아이콘 색상을 흰색으로 설정
+      child: const Icon(Icons.mic), // 마이크 아이콘으로 변경
       ),
 
       // 플로팅 버튼 위치 (왼쪽 아래쪽 설정)
@@ -122,19 +119,13 @@ class _HomePageState extends State<HomePage> {
 
       // 그림자 제거 (평면 앱바)
       elevation: 0,
-
+      // title: Text('홈', style: headingStyle), // 필요시 제목 추가
       // 좌측 버튼 - 테마 변경 버튼 구현
       leading: GestureDetector(
         onTap: () {
           // 테마 변경 (라이트/다크 모드 전환)
           ThemeServices().switchTheme();
 
-          // 테마 변경 시 알림 표시
-          notifyHelper.displayNotification(
-              title: "Theme Changed",
-              body: Get.isDarkMode
-                  ? "Activated Light Theme"
-                  : "Activated Dark Theme");
           //notifyHelper.scheduledNotification();
         },
         // 현재 테마에 따라 다른 아이콘 표시
@@ -149,6 +140,13 @@ class _HomePageState extends State<HomePage> {
 
       // 우측 기능 버튼들
       actions: [
+        IconButton(
+          icon: Icon(Icons.description_outlined, color: Get.isDarkMode ? Colors.white : darkGreyClr, size: 28),
+          onPressed: () {
+            Get.to(() => ScriptsPage());
+          },
+        ),
+        const SizedBox(width: 10),
         // 사용자 프로필 섹션 (로그아웃 메뉴 포함)
         _buildProfileSection(),
         const SizedBox(width: 20),
@@ -257,7 +255,6 @@ class _HomePageState extends State<HomePage> {
               onTap: () async {
                 // 할 일 추가 페이지로 이동
                 await Get.to(() => const AddTaskPage());
-                // 페이지 복귀 후 할 일 목록 새로고침
                 _taskController.getTasks();
               }),
         ],
@@ -367,16 +364,7 @@ class _HomePageState extends State<HomePage> {
                     /*   var hour = task.startTime.toString().split(':')[0];
                     var minutes = task.startTime.toString().split(':')[1]; */
 
-                    // 할 일의 시작 시간을 파싱하여 알림 설정에 사용
-                    var date = DateFormat.jm().parse(task.startTime!);
-                    var myTime = DateFormat('HH:mm').format(date);
-
-                    // 알림 예약 - 시간, 분, 할 일 정보 전달
-                    notifyHelper.scheduledNotification(
-                      int.parse(myTime.toString().split(':')[0]), // 시간
-                      int.parse(myTime.toString().split(':')[1]), // 분
-                      task, // 할 일 객체
-                    );
+                    // 할 일의 시작 시간 파싱 관련 코드는 알림 기능 제거로 인해 삭제됨
                   } catch (e) {
                     // 시간 파싱 오류 발생 시 콘솔에 오류 출력
                     print('Error parsing time: $e');

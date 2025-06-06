@@ -1,0 +1,12 @@
+{
+  "elements": {},
+  "imports": [
+    "package:flutter/material.dart",
+    "package:get/get.dart",
+    "package:intl/intl.dart",
+    "package:todo/controllers/script_controller.dart",
+    "package:todo/models/script_model.dart",
+    "package:todo/ui/pages/add_speech_to_text.dart",
+    "package:todo/ui/theme.dart"
+  ]
+}

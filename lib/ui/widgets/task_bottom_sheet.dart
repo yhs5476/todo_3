@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:todo/controllers/task_controller.dart';
 import 'package:todo/models/task.dart';
-import 'package:todo/services/notification_services.dart';
 import 'package:todo/ui/size_config.dart';
 import 'package:todo/ui/theme.dart';
 
@@ -26,7 +25,7 @@ class TaskBottomSheet {
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 10,
               offset: const Offset(0, -5),
             ),
@@ -58,8 +57,6 @@ class TaskBottomSheet {
                 : _buildBottomSheetButton(
                     label: '할 일 완료',
                     onTap: () {
-                      // 할 일 완료 시 해당 알림 취소
-                      NotifyHelper().cancelNotification(task);
                       // 할 일을 완료 상태로 변경
                       taskController.markTaskAsCompleted(task.id!);
                       // 바텀 시트 닫기
@@ -73,8 +70,6 @@ class TaskBottomSheet {
             _buildBottomSheetButton(
               label: '할 일 삭제',
               onTap: () {
-                // 할 일 삭제 시 해당 알림 취소
-                NotifyHelper().cancelNotification(task);
                 // 할 일 삭제 처리
                 taskController.deleteTasks(task);
                 // 바텀 시트 닫기

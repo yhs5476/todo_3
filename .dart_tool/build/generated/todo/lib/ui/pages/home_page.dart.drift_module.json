@@ -1,0 +1,27 @@
+{
+  "elements": {},
+  "imports": [
+    "package:date_picker_timeline/date_picker_timeline.dart",
+    "package:firebase_auth/firebase_auth.dart",
+    "package:flutter/material.dart",
+    "package:flutter_staggered_animations/flutter_staggered_animations.dart",
+    "package:flutter_svg/flutter_svg.dart",
+    "package:get/get.dart",
+    "package:google_fonts/google_fonts.dart",
+    "package:intl/intl.dart",
+    "package:todo/services/auth_service.dart",
+    "package:todo/services/notification_services.dart",
+    "package:todo/services/theme_services.dart",
+    "package:todo/ui/pages/add_speech_to_text.dart",
+    "package:todo/ui/pages/login_page.dart",
+    "package:todo/ui/size_config.dart",
+    "package:todo/ui/theme.dart",
+    "package:todo/ui/pages/add_task_page.dart",
+    "package:todo/ui/widgets/button.dart",
+    "package:todo/ui/widgets/task_tile.dart",
+    "package:todo/ui/pages/scripts_page.dart",
+    "package:todo/controllers/task_controller.dart",
+    "package:todo/models/task.dart",
+    "package:todo/ui/widgets/task_bottom_sheet.dart"
+  ]
+}

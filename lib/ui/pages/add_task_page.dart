@@ -20,8 +20,9 @@ import 'add_speech_to_text.dart';
 /// 할일 추가 화면 위젯
 /// 사용자가 새로운 할일을 입력하고 추가하는 화면
 class AddTaskPage extends StatefulWidget {
+  final String? initialTaskContent;
   // 생성자
-  const AddTaskPage({Key? key}) : super(key: key);
+  const AddTaskPage({Key? key, this.initialTaskContent}) : super(key: key);
 
   // StatefulWidget의 State 객체 생성
   @override
@@ -36,7 +37,13 @@ class _AddTaskPageState extends State<AddTaskPage> {
   // 할일 제목 입력을 위한 컨트롤러
   final TextEditingController _titleController = TextEditingController();
   // 할일 내용 입력을 위한 컨트롤러
-  final TextEditingController _noteController = TextEditingController();
+  late final TextEditingController _noteController;
+
+  @override
+  void initState() {
+    super.initState();
+    _noteController = TextEditingController(text: widget.initialTaskContent);
+  }
 
   // 현재 날짜를 기본값으로 설정
   DateTime _selectedDate = DateTime.now();
@@ -56,7 +63,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
   // 반복 주기 옵션 목록
   List<String> repeatList = ['없음', '매일', '매주', '매월'];
 
-  // 선택된 색상 인덱스 - 기본값 0(파란색)
+  // 선택된 색상 인덱스 - 기본값 0(갈색)
   int _selectedColor = 0;
 
   // 위젯 빌드 메소드 오버라이드
@@ -97,13 +104,13 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   ),
                   // 음성 인식 버튼
                   Container(
-                    margin: const EdgeInsets.only(top: 12, right: 10),
+                    margin: const EdgeInsets.only(top: 52, right: 1), // Increased top margin to lower the icon
                     child: IconButton(
                       icon: const Icon(
                         // 마이크 아이콘
                         Icons.mic,
                         // 아이콘 색상: 기본 테마 색상
-                        color: primaryClr,
+                        color: primaryClr, // Changed to white
                         // 아이콘 크기: 30
                         size: 30,
                       ),
@@ -138,11 +145,11 @@ class _AddTaskPageState extends State<AddTaskPage> {
                 widget: IconButton(
                   // 달력 팝업 표시
                   onPressed: () => _getDateFromUser(),
-                  icon: const Icon(
+                  icon: Icon(
                     // 달력 아이콘
                     Icons.calendar_today_outlined,
                     // 아이콘 색상: 회색
-                    color: Colors.grey,
+                    color: primaryClr,
                   ),
                 ),
               ),
@@ -159,11 +166,11 @@ class _AddTaskPageState extends State<AddTaskPage> {
                       widget: IconButton(
                         // 시간 선택 팝업 표시 (시작 시간용)
                         onPressed: () => _getTimeFromUser(isStartTime: true),
-                        icon: const Icon(
+                        icon: Icon(
                           // 시계 아이콘
                           Icons.access_time_rounded,
                           // 아이콘 색상: 회색
-                          color: Colors.grey,
+                          color: primaryClr,
                         ),
                       ),
                     ),
@@ -182,11 +189,11 @@ class _AddTaskPageState extends State<AddTaskPage> {
                       widget: IconButton(
                         // 시간 선택 팝업 표시 (종료 시간용)
                         onPressed: () => _getTimeFromUser(isStartTime: false),
-                        icon: const Icon(
+                        icon: Icon(
                           // 시계 아이콘
                           Icons.access_time_rounded,
                           // 아이콘 색상: 회색
-                          color: Colors.grey,
+                          color: primaryClr,
                         ),
                       ),
                     ),

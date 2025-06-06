@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:todo/ui/theme.dart';
 import '../widgets/button.dart';
+import '../widgets/input_field.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:flutter_tts/flutter_tts.dart';
 
@@ -13,7 +14,8 @@ class AddSpeechToTextPage extends StatefulWidget {
 }
 
 class _AddSpeechToTextPageState extends State<AddSpeechToTextPage> {
-  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _scriptTitleController = TextEditingController(); // For user-defined script title
+  final TextEditingController _titleController = TextEditingController(); // For recognized speech (content)
   
   bool _isListeningLoading = false; // 녹음 로딩 인디케이터 상태
   bool _isListening = false; // 녹음 상태
@@ -82,18 +84,7 @@ class _AddSpeechToTextPageState extends State<AddSpeechToTextPage> {
     });
   }
   
-  // 텍스트 음성 변환
-  Future<void> _speak() async {
-    if (_titleController.text.isNotEmpty) {
-      await _flutterTts.speak(_titleController.text);
-    } else {
-      Get.snackbar(
-        '알림',
-        '음성으로 변환할 텍스트가 없습니다.',
-        snackPosition: SnackPosition.BOTTOM,
-      );
-    }
-  }
+  
   
   @override
   Widget build(BuildContext context) {
@@ -126,6 +117,13 @@ class _AddSpeechToTextPageState extends State<AddSpeechToTextPage> {
                 '         음성을 스크립트로 변경하세요',
                 style: headingStyle,
 
+              ),
+              const SizedBox(height: 20),
+              // Script Title Input Field
+              InputField(
+                title: '스크립트 제목',
+                hint: '스크립트 제목을 입력하세요',
+                controller: _scriptTitleController,
               ),
               const SizedBox(height: 20),
               // 음성 인식 버튼 및 로딩 인디케이터
@@ -168,42 +166,69 @@ class _AddSpeechToTextPageState extends State<AddSpeechToTextPage> {
                 ),
               ),
               const SizedBox(height: 30),
-              // 음성으로 들어보기 버튼
+              // 스크립트 저장버튼
               Row(
                 children: [
                   Expanded(
                     child: MyButton(
-                      label: '음성으로 들어보기',
-                      onTap: _speak,
+                      label: '스크립트 저장하기',
+                      onTap: () {
+                        String scriptTitle = _scriptTitleController.text.trim();
+                        String scriptContent = _titleController.text.trim();
+
+                        if (scriptTitle.isEmpty) {
+                          Get.snackbar(
+                            '오류',
+                            '스크립트 제목을 입력해주세요.',
+                            snackPosition: SnackPosition.BOTTOM,
+                            backgroundColor: Colors.red,
+                            colorText: Colors.white,
+                          );
+                          return;
+                        }
+
+                        if (scriptContent.isEmpty) {
+                          Get.snackbar(
+                            '오류',
+                            '스크립트 내용이 없습니다. 먼저 음성 인식을 실행해주세요.',
+                            snackPosition: SnackPosition.BOTTOM,
+                            backgroundColor: Colors.red,
+                            colorText: Colors.white,
+                          );
+                          return;
+                        }
+
+                        Get.back(result: {'title': scriptTitle, 'content': scriptContent});
+                      },
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 15),
               // 할 일 추가 버튼
-              Row(
-                children: [
-                  Expanded(
-                    child: MyButton(
-                      label: '할 일 추가하기',
-                      onTap: () {
-                        if (_titleController.text.isNotEmpty) {
-                          // 할 일 추가 기능 구현 예정
-                          Get.back(result: _titleController.text);
-                        } else {
-                          Get.snackbar(
-                            '오류',
-                            '할 일 내용을 입력해주세요',
-                            snackPosition: SnackPosition.BOTTOM,
-                            backgroundColor: Colors.red,
-                            colorText: Colors.white,
-                          );
-                        }
-                      },
-                    ),
-                  ),
-                ],
-              ),
+              // Row(
+              //   children: [
+              //     Expanded(
+              //       child: MyButton(
+              //         label: '할 일 추가하기',
+              //         onTap: () {
+              //           if (_titleController.text.isNotEmpty) {
+              //             // 할 일 추가 기능 구현 예정
+              //             Get.back(result: _titleController.text);
+              //           } else {
+              //             Get.snackbar(
+              //               '오류',
+              //               '할 일 내용을 입력해주세요',
+              //               snackPosition: SnackPosition.BOTTOM,
+              //               backgroundColor: Colors.red,
+              //               colorText: Colors.white,
+              //             );
+              //           }
+              //         },
+              //       ),
+              //     ),
+              //   ],
+              // ),
             ],
           ),
         ),

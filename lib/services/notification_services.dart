@@ -14,8 +14,6 @@ import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
 // 할일 모델 클래스
 import '/models/task.dart';
-// 알림 화면 페이지
-import '../ui/pages/notification_screen.dart';
 // 기기의 현재 시간대 정보를 가져오기 위한 패키지
 import 'package:flutter_timezone/flutter_timezone.dart';
 
@@ -310,8 +308,6 @@ class NotifyHelper {
     selectNotificationSubject.stream.listen((String payload) async {
       // 디버그용 페이로드 출력
       debugPrint('My payload is $payload');
-      // 페이로드를 포함하여 알림 화면으로 이동
-      await Get.to(() => NotificationScreen(payload: payload));
     });
   }
 }

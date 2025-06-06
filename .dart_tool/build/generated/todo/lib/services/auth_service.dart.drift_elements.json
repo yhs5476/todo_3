@@ -1,0 +1,1 @@
+{"valid_import":true,"imports":[{"uri":"package:firebase_auth/firebase_auth.dart","transitive":false},{"uri":"package:flutter/material.dart","transitive":false},{"uri":"package:google_sign_in/google_sign_in.dart","transitive":false},{"uri":"package:get/get.dart","transitive":false}],"elements":[]}

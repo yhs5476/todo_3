@@ -1,0 +1,12 @@
+{
+  "elements": {},
+  "imports": [
+    "package:flutter/material.dart",
+    "package:get/get.dart",
+    "package:todo/controllers/task_controller.dart",
+    "package:todo/models/task.dart",
+    "package:todo/services/notification_services.dart",
+    "package:todo/ui/size_config.dart",
+    "package:todo/ui/theme.dart"
+  ]
+}

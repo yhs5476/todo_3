@@ -1,190 +1,116 @@
+import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
-import 'package:sqflite/sqflite.dart';
-
-import '../models/task.dart';
+import 'database.dart'; // Your Drift database
+import '../models/task.dart' as legacy_task_model; // Legacy Task model
 
 class DBHelper {
-  static Database? _db;
-  static const int _version = 1;
-  static const String _tableName = 'tasks';
+  // Static instance of the Drift database
+  static final AppDatabase _db = AppDatabase();
 
-  static Future<void> initDb() async {
-    if (_db != null) {
-      debugPrint('db not null');
-      return;
+  // Helper to convert legacy Task to TasksCompanion for insert/update
+  static TasksCompanion _toCompanion(legacy_task_model.Task task) {
+    return TasksCompanion(
+      id: task.id == null ? const Value.absent() : Value(task.id!),
+      title: Value(task.title),
+      note: Value(task.note),
+      isCompleted: Value(task.isCompleted == 1),
+      date: Value(task.date),
+      startTime: Value(task.startTime),
+      endTime: Value(task.endTime),
+      color: Value(task.color),
+      remind: Value(task.remind),
+      repeat: Value(task.repeat),
+    );
+  }
+
+  // Helper to convert Drift's Task to legacy Task model
+  static legacy_task_model.Task _fromDriftTask(Task driftTask) { // Changed TaskData to Task
+    return legacy_task_model.Task(
+      id: driftTask.id,
+      title: driftTask.title,
+      note: driftTask.note,
+      isCompleted: driftTask.isCompleted == true ? 1 : 0,
+      date: driftTask.date,
+      startTime: driftTask.startTime,
+      endTime: driftTask.endTime,
+      color: driftTask.color,
+      remind: driftTask.remind,
+      repeat: driftTask.repeat,
+    );
+  }
+
+  static Future<int> insert(legacy_task_model.Task? task) async {
+    if (task == null) {
+      debugPrint('Task is null');
+      return -1;
     }
+    debugPrint('insert function called - Drift');
     try {
-      String path = '${await getDatabasesPath()}/task.db';
-      debugPrint('Database path: $path');
-      _db = await openDatabase(path, version: _version,
-          onCreate: (Database db, int version) async {
-        debugPrint('Creating new one');
-        // When creating the db, create the table
-        return db.execute('CREATE TABLE $_tableName ('
-            'id INTEGER PRIMARY KEY AUTOINCREMENT, '
-            'title STRING, note TEXT, date STRING, '
-            'startTime STRING, endTime STRING, '
-            'remind INTEGER, repeat STRING, '
-            'color INTEGER, '
-            'isCompleted INTEGER)');
-      });
-      print('DB Created');
+      final companion = _toCompanion(task);
+      final insertedTask = await _db.into(_db.tasks).insertReturning(companion, mode: InsertMode.insertOrReplace);
+      return insertedTask.id; // Return the id of the inserted row
     } catch (e) {
-      print('Error initializing database: $e');
+      debugPrint('Error inserting task with Drift: $e');
+      return -1;
     }
   }
 
-  static Future<int> insert(Task? task) async {
-    print('insert function called');
+  static Future<int> delete(legacy_task_model.Task task) async {
+    debugPrint('delete function called - Drift');
+    if (task.id == null) return -1;
     try {
-      // 데이터베이스가 초기화되지 않은 경우 초기화
-      if (_db == null) {
-        print('Database is not initialized, initializing now');
-        await initDb();
-        
-        // 초기화 후에도 데이터베이스가 null인지 확인
-        if (_db == null) {
-          print('Database initialization failed');
-          return -1;
-        }
-      }
-      
-      // 태스크가 null인지 확인
-      if (task == null) {
-        print('Task is null');
-        return -1;
-      }
-      
-      // 데이터베이스에 삽입
-      int result = await _db!.insert(_tableName, task.toJson());
-      print('Task inserted successfully with ID: $result');
-      return result;
+      return await (_db.delete(_db.tasks)..where((tbl) => tbl.id.equals(task.id!))).go();
     } catch (e) {
-      print('Error inserting task: $e');
-      return -1; // 오류 발생 시 -1 반환
-    }
-  }
-
-  static Future<int> delete(Task task) async {
-    print('delete function called');
-    try {
-      // 데이터베이스가 초기화되지 않은 경우 초기화
-      if (_db == null) {
-        print('Database is not initialized, initializing now');
-        await initDb();
-        
-        // 초기화 후에도 데이터베이스가 null인지 확인
-        if (_db == null) {
-          print('Database initialization failed');
-          return -1;
-        }
-      }
-      
-      return await _db!.delete(
-        _tableName,
-        where: 'id = ?',
-        whereArgs: [task.id],
-      );
-    } catch (e) {
-      print('Error deleting task: $e');
+      debugPrint('Error deleting task with Drift: $e');
       return -1;
     }
   }
 
   static Future<int> deleteAll() async {
-    print('deleteAll function called');
+    debugPrint('deleteAll function called - Drift');
     try {
-      // 데이터베이스가 초기화되지 않은 경우 초기화
-      if (_db == null) {
-        print('Database is not initialized, initializing now');
-        await initDb();
-        
-        // 초기화 후에도 데이터베이스가 null인지 확인
-        if (_db == null) {
-          print('Database initialization failed');
-          return -1;
-        }
-      }
-      
-      return await _db!.delete(_tableName);
+      return await _db.delete(_db.tasks).go();
     } catch (e) {
-      print('Error deleting all tasks: $e');
+      debugPrint('Error deleting all tasks with Drift: $e');
       return -1;
     }
   }
 
+  // Returns List<Map<String, dynamic>> to maintain compatibility for now
+  // Ideally, TaskController would be updated to expect List<legacy_task_model.Task>
   static Future<List<Map<String, dynamic>>> query() async {
-    print('Query Called!!!!!!!!!!!!!!!!!!!');
+    debugPrint('Query Called - Drift');
     try {
-      // 데이터베이스가 초기화되지 않은 경우 초기화
-      if (_db == null) {
-        print('Database is not initialized, initializing now');
-        await initDb();
-        
-        // 초기화 후에도 데이터베이스가 null인지 확인
-        if (_db == null) {
-          print('Database initialization failed');
-          return [];
-        }
-      }
-      
-      return await _db!.query(_tableName);
+      final driftTasks = await _db.select(_db.tasks).get();
+      // Convert Drift TaskData to Map<String, dynamic> for compatibility
+      return driftTasks.map((dt) => _fromDriftTask(dt).toJson()).toList();
     } catch (e) {
-      print('Error querying database: $e');
+      debugPrint('Error querying database with Drift: $e');
       return [];
     }
   }
-  
-  // 특정 날짜의 할일만 쿼리하는 메소드
+
+  // Returns List<Map<String, dynamic>> for compatibility
   static Future<List<Map<String, dynamic>>> queryByDate(String date) async {
-    print('Query by date: $date');
+    debugPrint('Query by date: $date - Drift');
     try {
-      // 데이터베이스가 초기화되지 않은 경우 초기화
-      if (_db == null) {
-        print('Database is not initialized, initializing now');
-        await initDb();
-        
-        // 초기화 후에도 데이터베이스가 null인지 확인
-        if (_db == null) {
-          print('Database initialization failed');
-          return [];
-        }
-      }
-      
-      return await _db!.query(
-        _tableName,
-        where: 'date = ?',
-        whereArgs: [date],
-      );
+      final driftTasks = await (_db.select(_db.tasks)..where((tbl) => tbl.date.equals(date))).get();
+      return driftTasks.map((dt) => _fromDriftTask(dt).toJson()).toList();
     } catch (e) {
-      print('Error querying by date: $e');
+      debugPrint('Error querying by date with Drift: $e');
       return [];
     }
   }
 
   static Future<int> update(int id) async {
-    print('update function called');
+    debugPrint('update function called (mark as complete) - Drift');
     try {
-      // 데이터베이스가 초기화되지 않은 경우 초기화
-      if (_db == null) {
-        print('Database is not initialized, initializing now');
-        await initDb();
-        
-        // 초기화 후에도 데이터베이스가 null인지 확인
-        if (_db == null) {
-          print('Database initialization failed');
-          return -1;
-        }
-      }
-      
-      return await _db!.rawUpdate('''
-      UPDATE tasks
-      SET isCompleted = ?
-      WHERE id = ?
-      ''', [1, id]);
+      return await (_db.update(_db.tasks)..where((tbl) => tbl.id.equals(id)))
+          .write(const TasksCompanion(isCompleted: Value(true)));
     } catch (e) {
-      print('Error updating task: $e');
+      debugPrint('Error updating task with Drift: $e');
       return -1;
     }
   }
 }
+

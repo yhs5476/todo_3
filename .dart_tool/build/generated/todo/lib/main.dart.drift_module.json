@@ -1,0 +1,16 @@
+{
+  "elements": {},
+  "imports": [
+    "package:flutter/material.dart",
+    "package:firebase_core/firebase_core.dart",
+    "package:get/get.dart",
+    "package:get_storage/get_storage.dart",
+    "package:todo/services/auth_service.dart",
+    "package:todo/services/theme_services.dart",
+    "package:todo/ui/theme.dart",
+    "package:todo/ui/pages/login_page.dart",
+    "package:todo/controllers/script_controller.dart",
+    "package:todo/db/db_helper.dart",
+    "package:todo/firebase_options.dart"
+  ]
+}
